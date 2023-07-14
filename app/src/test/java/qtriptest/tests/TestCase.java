@@ -1,6 +1,7 @@
 package qtriptest.tests;
 
 
+import qtriptest.pages.AdventurePage;
 import qtriptest.pages.HomePage;
 import qtriptest.pages.LoginPage;
 import qtriptest.pages.RegisterPage;
@@ -184,6 +185,7 @@ static RemoteWebDriver driver;
 			e.printStackTrace();
 		}
 	}
+
 
 	// Quit webdriver after Unit Tests
 	@AfterClass(enabled = true)

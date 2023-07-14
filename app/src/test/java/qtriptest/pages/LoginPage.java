@@ -21,8 +21,6 @@ public class LoginPage {
     WebElement password_txt_box;
     @FindBy(xpath ="//button[contains(text(),'Login to QTrip')]")
     WebElement login_button;
-    @FindBy(className ="navbar-toggler")
-    WebElement menu_bar;
     @FindBy(xpath ="//div[contains(text(),'Logout')]")
     WebElement logout_button;
     @FindBy(xpath ="//a[contains(text(),'Login Here')]")
@@ -42,12 +40,11 @@ public class LoginPage {
 
     public Boolean performLogin(String emailAddress, String password) throws InterruptedException{
         
-        System.out.println("logging in with email: " + emailAddress + "pwd: " + password);
+        //System.out.println("logging in with email: " + emailAddress + "pwd: " + password);
         email_txt_box.sendKeys(emailAddress);
         password_txt_box.sendKeys(password);
         login_button.click();
         Thread.sleep(5000);
-        menu_bar.click();
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
                 .pollingEvery(Duration.ofMillis(250))
@@ -58,17 +55,16 @@ public class LoginPage {
 
     public Boolean verifyUserLoggedIn(){
         try{
-            //WebElement username_label = driver.findElement(By.className("username-text"));
             return logout_button.getText().equals("Logout");
         } catch(Exception e) {
         return false;
         }
     }
+    
     public Boolean performLogout() throws InterruptedException{
     
         logout_button.click();
         Thread.sleep(3000);
-        menu_bar.click();
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
                 .pollingEvery(Duration.ofMillis(250))
@@ -79,7 +75,6 @@ public class LoginPage {
 
     public Boolean verifyUserLoggedOut(){
         try{
-            //WebElement username_label = driver.findElement(By.className("username-text"));
             return loginButton.getText().equals("Login Here");
         } catch(Exception e) {
         return false;

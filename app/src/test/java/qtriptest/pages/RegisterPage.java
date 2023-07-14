@@ -45,7 +45,7 @@ public class RegisterPage {
 
         String test_data_password = password;
 
-        System.out.println("Registering with emailAddress: " + test_data_email + test_data_password);
+        //System.out.println("Registering with emailAddress: " + test_data_email + test_data_password);
         email_text_box.sendKeys(test_data_email);
         password_text_box.sendKeys(test_data_password);
         confirm_password_text_box.sendKeys(test_data_password);
@@ -53,7 +53,6 @@ public class RegisterPage {
         this.lastGeneratedUsername = test_data_email;
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.urlToBe("https://qtripdynamic-qa-frontend.vercel.app/pages/login"));
-        Thread.sleep(3000);
         return this.driver.getCurrentUrl().endsWith("/login");
     }
 }
