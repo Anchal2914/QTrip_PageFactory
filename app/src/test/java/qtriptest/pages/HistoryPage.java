@@ -1,6 +1,7 @@
 
 package qtriptest.pages;
 
+import qtriptest.SeleniumWrapper;
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -36,9 +37,7 @@ public class HistoryPage {
     }
 
     public void navigateToRerservationPage(){
-        if(!driver.getCurrentUrl().equals(this.url)){
-            driver.get(this.url);
-        }
+        SeleniumWrapper.navigate(driver, url);
     }
 
     public String storeTransactionId(){
@@ -52,7 +51,8 @@ public class HistoryPage {
     public Boolean cancleReservation() throws InterruptedException{
     
         Thread.sleep(3000);
-        cancleReservationButton.click();
+        //cancleReservationButton.click();
+        SeleniumWrapper.click(cancleReservationButton, driver);
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
                 .pollingEvery(Duration.ofMillis(250))

@@ -1,6 +1,6 @@
 package qtriptest.pages;
 
-import java.util.concurrent.TimeUnit;
+import qtriptest.SeleniumWrapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -32,10 +32,8 @@ public class HomePage {
     }
 
     public void navigateToHomePage() throws InterruptedException{
-        if(!driver.getCurrentUrl().equals(this.url)){
-            driver.get(this.url);
+            SeleniumWrapper.navigate(driver, url);
         }
-    }
 
     // public void clickOnRegisterLink() throws InterruptedException{
     //     try {
@@ -50,8 +48,9 @@ public class HomePage {
     public Boolean searchForCity(String city){
         try {
             Thread.sleep(3000);
-            searchCity.clear();
-            searchCity.sendKeys(city);
+            // searchCity.clear();
+            //searchCity.sendKeys(city);
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, searchCity, 3), city);
             WebDriverWait wait = new WebDriverWait(driver, 30);
             wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ul[@id='results']/a")),
             ExpectedConditions.visibilityOfElementLocated(By.xpath("//h5[text()='No City found']"))));
@@ -85,7 +84,8 @@ public class HomePage {
 
     public Boolean clickOnCity() {
         try {
-            cityResults.click();
+            //cityResults.click();
+            SeleniumWrapper.click(cityResults, driver);
             WebDriverWait wait = new WebDriverWait(driver, 30);
             wait.until(ExpectedConditions.urlContains("https://qtripdynamic-qa-frontend.vercel.app/pages/adventures/"));
                     return true;

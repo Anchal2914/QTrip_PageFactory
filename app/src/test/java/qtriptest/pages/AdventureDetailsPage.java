@@ -1,5 +1,6 @@
 package qtriptest.pages;
 
+import qtriptest.SeleniumWrapper;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
@@ -44,11 +45,30 @@ public class AdventureDetailsPage {
     public Boolean bookAdventure(String name, String date, String persons) throws InterruptedException{
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         Thread.sleep(3000);
-        nameTextBox.sendKeys(name);
-        dateTextBox.sendKeys(date);
-        personTextBox.clear();
-        personTextBox.sendKeys(persons);
-        reserveButton.click();
+        //nameTextBox.sendKeys(name);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, nameTextBox, 3), name);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //dateTextBox.sendKeys(date);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, dateTextBox, 3), date);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //personTextBox.clear();
+        //personTextBox.sendKeys(persons);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, personTextBox, 3), persons);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //reserveButton.click();
+        SeleniumWrapper.click(reserveButton, driver);
         Thread.sleep(5000);
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
@@ -72,7 +92,8 @@ public class AdventureDetailsPage {
     public void clickOnReservation() throws InterruptedException{
         try {
             Thread.sleep(3000);
-            reservationLink.click();
+            //reservationLink.click();
+            SeleniumWrapper.click(reservationLink, driver);
         } catch (Exception e){
             System.out.println("Exception while clciking on reservation link: " + e.getMessage());
         }
@@ -81,7 +102,8 @@ public class AdventureDetailsPage {
     public void clickOnHome() throws InterruptedException{
         try {
             Thread.sleep(3000);
-            homeLink.click();
+            //homeLink.click();
+            SeleniumWrapper.click(homeLink, driver);
         } catch (Exception e){
             System.out.println("Exception while clciking on reservation link: " + e.getMessage());
         }

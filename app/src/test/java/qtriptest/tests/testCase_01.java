@@ -1,10 +1,20 @@
 package qtriptest.tests;
 
 import qtriptest.DriverSingleton;
+import qtriptest.ReportSingleton;
 import qtriptest.pages.HomePage;
 import qtriptest.pages.LoginPage;
 import qtriptest.pages.RegisterPage;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
@@ -29,19 +39,31 @@ public class testCase_01 extends DP{
     //     logStatus("driver", "Initializing driver", "Success");
     // }
     static RemoteWebDriver driver;
+    static ExtentReports report; 
+    static ExtentTest test;
 
     @BeforeTest(alwaysRun=true)
     public static void createDriver() throws MalformedURLException {
-        DriverSingleton dsObj = DriverSingleton.getInstance();
-        driver = dsObj.getDriver();
+        driver = DriverSingleton.getDriverInstance();
+        
+    }
+
+    public static String capture(WebDriver driver) throws IOException{
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File Dest = new File(System.getProperty("user.dir") + "/QTripImages/"+ System.currentTimeMillis() + ".png");
+        String flpath = Dest.getAbsolutePath();
+        FileUtils.copyFile(scrFile, Dest);
+        return flpath;
     }
     
     @Test(description = "Verify user registration - login - logout", priority=1, groups = "Login Flow", enabled=true, dataProvider = "data-provider")
-    public static void TestCase01(String emailAddress, String password) throws InterruptedException{
+    public static void TestCase01(String emailAddress, String password) throws InterruptedException, IOException{
+        report = ReportSingleton.getReport();
+        test = ReportSingleton.getTestInstance();
         HomePage home = new HomePage(driver);
-        home.navigateToHomePage(); 
+        home.navigateToHomePage();
         RegisterPage register = new RegisterPage(driver);
-        register.navigateToRegisterPage(); 
+        register.navigateToRegisterPage();
         Assert.assertTrue(register.registerUser(emailAddress, password, true));
         String uniqueUsername = register.lastGeneratedUsername;
         LoginPage login = new LoginPage(driver);
@@ -49,6 +71,13 @@ public class testCase_01 extends DP{
         login.performLogin(uniqueUsername, password);
         Assert.assertTrue(login.verifyUserLoggedIn());
         login.performLogout();
-        Assert.assertTrue(login.verifyUserLoggedOut());    
+        try{
+            Assert.assertTrue(login.verifyUserLoggedOut());
+            test.log(LogStatus.PASS,test.addScreenCapture(capture(driver))+ "User registration - login - logout Passed");
+        } catch (AssertionError e) {
+            test.log(LogStatus.FAIL,test.addScreenCapture(capture(driver))+ "user registration - login - logout Failed, reason: " +e.getMessage());
+        }
+        ReportSingleton.endTest();
     }
+
 }

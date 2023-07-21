@@ -1,5 +1,6 @@
 package qtriptest.pages;
 
+import qtriptest.SeleniumWrapper;
 import java.util.UUID;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -17,6 +18,7 @@ public class RegisterPage {
 
     @FindBy(id ="floatingInput")
     WebElement email_text_box;
+    //SeleniumWrapper.findElementWithRetry(driver, email_text_box,3);
     @FindBy(name ="password")
     WebElement password_text_box;
     @FindBy(name ="confirmpassword")
@@ -31,9 +33,7 @@ public class RegisterPage {
     }
 
     public void navigateToRegisterPage(){
-        if(!driver.getCurrentUrl().equals(this.url)){
-            driver.get(this.url);
-        }
+        SeleniumWrapper.navigate(driver, url);
     }
 
     public Boolean registerUser(String emailAddress, String password, boolean generateRandomUsername) throws InterruptedException{
@@ -46,10 +46,29 @@ public class RegisterPage {
         String test_data_password = password;
 
         //System.out.println("Registering with emailAddress: " + test_data_email + test_data_password);
-        email_text_box.sendKeys(test_data_email);
-        password_text_box.sendKeys(test_data_password);
-        confirm_password_text_box.sendKeys(test_data_password);
-        register_button.click();
+        //email_text_box.sendKeys(test_data_email);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, email_text_box, 3), test_data_email);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //password_text_box.sendKeys(test_data_password);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, password_text_box, 3), test_data_password);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //confirm_password_text_box.sendKeys(test_data_password);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, confirm_password_text_box, 3), test_data_password);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //register_button.click();
+        SeleniumWrapper.click(register_button, driver);
         this.lastGeneratedUsername = test_data_email;
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.urlToBe("https://qtripdynamic-qa-frontend.vercel.app/pages/login"));

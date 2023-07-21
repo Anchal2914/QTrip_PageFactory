@@ -1,5 +1,6 @@
 package qtriptest.pages;
 
+import qtriptest.SeleniumWrapper;
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -33,17 +34,28 @@ public class LoginPage {
     }
 
     public void navigateToLoginPage(){
-        if(!driver.getCurrentUrl().equals(this.url)){
-            driver.get(this.url);
-        }
+        SeleniumWrapper.navigate(driver, url);
     }
 
     public Boolean performLogin(String emailAddress, String password) throws InterruptedException{
         
         //System.out.println("logging in with email: " + emailAddress + "pwd: " + password);
-        email_txt_box.sendKeys(emailAddress);
-        password_txt_box.sendKeys(password);
-        login_button.click();
+        //email_txt_box.sendKeys(emailAddress);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, email_txt_box, 3), emailAddress);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //password_txt_box.sendKeys(password);
+        try {
+            SeleniumWrapper.sendKeys(SeleniumWrapper.findElementWithRetry(driver, password_txt_box, 3), password);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //login_button.click();
+        SeleniumWrapper.click(login_button, driver);
         Thread.sleep(5000);
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
@@ -63,7 +75,8 @@ public class LoginPage {
     
     public Boolean performLogout() throws InterruptedException{
     
-        logout_button.click();
+        //logout_button.click();
+        SeleniumWrapper.click(logout_button, driver);
         Thread.sleep(3000);
         FluentWait<RemoteWebDriver> wait = new FluentWait<>(driver)
                 .withTimeout((Duration.ofSeconds(30)))
